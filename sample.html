@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PUZZLE</title>
+    <style>
+        canvas {
+            width: 450px;
+            height: 450px;
+            border: 5px solid black;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: blueviolet; font-family: cursive; text-align: center; font-size: 50px;">Puzzle game</h1>
+    <div style="width:1400; height: 1400px;position: relative;">
+
+        <div id="block1"
+            style="width: 600px; height: 600px; background-color:none; display: inline; float: left; position: relative;">
+            <h1 style="text-align: center; font-family: cursive; color:hotpink">Solve Puzzle</h1>
+            <canvas id="canvas" height="450px" width="450px" style="position:absolute; left:70px; top:95px;">
+
+            </canvas>
+
+        </div>
+
+        <div id="block2"
+            style="width: 600px; height: 600px; background-color:none; display: inline; float: right; position: relative;">
+            <h1 style="text-align: center; font-family: cursive; color:hotpink">Preview</h1>
+            <div
+                style="width:450px; height:450px; border: 5px solid black; position: absolute; left:70px; top:95px;font-size: 0px;">
+                <div>
+                    <img src="1.jpg" id="puzz1" width="150" height="150">
+                    <img src="2.jpg" id="puzz2" width="150" height="150">
+                    <img src="3.jpg" id="puzz3" width="150" height="150">
+                </div>
+                <div>
+                    <img src="4.jpg" id="puzz4" width="150" height="150">
+                    <img src="5.jpg" id="puzz5" width="150" height="150">
+                    <img src="6.jpg" id="puzz6" width="150" height="150">
+                </div>
+                <div>
+                    <img src="7.jpg" id="puzz7" width="150" height="150">
+                    <img src="8.jpg" id="puzz8" width="150" height="150">
+                    <img src="9.jpg" id="puzz9" width="150" height="150">
+                </div>
+
+
+
+            </div>
+        </div>
+        <h3 style="font-family:cursive; border: 2px solid; padding: 15px; background-color: greenyellow;">
+            created:Selvakumar Chinnappan</h3>
+    </div>
+
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var empty = 9;
+
+        function shuffle(array) {
+            var currentIndex = array.length;
+            var temporaryValue;
+            var randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+        }
+        var ar = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+        im = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 0]);
+
+        for (var i = 0; i <= 8; i++) {
+            if (im[i] == 0)
+                empty = i + 1;
+        }
+
+        var restart = 0;
+        function won() {
+            ctx.clearRect(300, 300, 150, 150);
+            var img = document.getElementById("puzz9");
+            var pat = ctx.createPattern(img, "repeat");
+            ctx.fillStyle = pat;
+            ctx.fillRect(300, 300, 150, 150);
+
+
+            restart = 1;
+
+        }
+
+        function draw() {
+
+
+            var t;
+            t = 0;
+            if (restart == 1) {
+
+                im = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 0]);
+                for (var i = 0; i <= 8; i++) {
+                    if (im[i] == 0)
+                        empty = i + 1;
+
+
+                }
+
+                console.log(empty);
+
+                ctx.clearRect(0, 0, 450, 450);
+                restart = 0;
+            }
+            for (var i = 0; i < 9; i++) {
+                if (im[i] != ar[i])
+                    t = 1;
+            }
+            console.log(im);
+            console.log(ar);
+
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 3; j++) {
+                    component(i, j);
+                }
+            }
+
+            console.log(t);
+
+            if (t == 0) {
+                console.log("one more");
+                won();
+            }
+
+        }
+
+        function component(x, y) {
+
+            var text = "puzz";
+            z = x + 3 * y;
+            z = im[z];
+            text = text + z.toString();
+            if (z != 0) {
+                var img = document.getElementById(text);
+                var pat = ctx.createPattern(img, "repeat");
+                ctx.fillStyle = pat;
+            }
+
+            else {
+                ctx.fillStyle = "white";
+            }
+
+            ctx.fillRect(150 * x, 150 * y, 150, 150);
+        }
+
+        function moveup() {
+            ctx.clearRect(0, 0, 450, 450);
+            if (restart == 1) {
+                draw();
+                return;
+            }
+            if (empty == 9 || empty == 7 || empty == 8) {
+
+
+                draw();
+            }
+            else {
+
+                text = "puzz";
+                var curr = empty;
+                empty = empty + 3;
+                var next = empty;
+                im[curr - 1] = im[next - 1];
+                im[next - 1] = 0;
+                draw();
+
+            }
+            console.log(empty);
+        }
+
+        function movedown() {
+            ctx.clearRect(0, 0, 450, 450);
+            if (restart == 1) {
+
+                draw();
+                return;
+            }
+            if (empty == 1 || empty == 2 || empty == 3) {
+
+
+                draw();
+            }
+            else {
+
+                text = "puzz";
+                var curr = empty;
+                empty = empty - 3;
+                var next = empty;
+                im[curr - 1] = im[next - 1];
+                im[next - 1] = 0;
+                draw();
+
+            }
+
+            console.log(empty);
+
+        }
+
+        function moveleft() {
+            ctx.clearRect(0, 0, 450, 450);
+
+            if (restart == 1) {
+
+                draw();
+                return;
+            }
+
+            if (empty == 6 || empty == 9 || empty == 3) {
+
+
+                draw();
+            }
+            else {
+
+                text = "puzz";
+                var curr = empty;
+                empty = empty + 1;
+                var next = empty;
+                im[curr - 1] = im[next - 1];
+                im[next - 1] = 0;
+                draw();
+
+
+            }
+            console.log(empty);
+        }
+
+        function moveright() {
+            ctx.clearRect(0, 0, 450, 450);
+            if (restart == 1) {
+
+                draw();
+                return;
+            }
+            if (empty == 1 || empty == 4 || empty == 7) {
+
+
+                draw();
+            }
+            else {
+
+                text = "puzz";
+                var curr = empty;
+                empty = empty - 1;
+                var next = empty;
+                im[curr - 1] = im[next - 1];
+                im[next - 1] = 0;
+                draw();
+            } console.log(empty);
+
+        }
+
+        window.addEventListener('keydown', function (e) {
+            key = e.keyCode;
+            if (key == 37) {
+                e.preventDefault();
+                moveleft();
+            }
+            if (key == 38) {
+                e.preventDefault();
+                moveup();
+            }
+            if (key == 39) {
+                e.preventDefault();
+                moveright();
+            }
+            if (key == 40) {
+                e.preventDefault();
+                movedown();
+            }
+            if (key == 32) {
+                e.preventDefault();
+                start();
+            }
+
+        });
+        function start() { //program start from here
+            draw();
+        }
+        ctx.font = "30px cursive ";
+
+        ctx.fillText("Hit Arrowkey to Start Game", 30, 220);
+
+    </script>
+
+</body>
+
+</html>
